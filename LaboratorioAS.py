@@ -16,6 +16,14 @@ async def root():
 async def decir_hola(name: str = "invitado"):
     return {"saludo": f"Hola, {name}! Te saludan Valery Tribales, Eilin Carrillo y Karla Vargas "}
 
+import os
+import uvicorn
+
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))  
+    uvicorn.run("LaboratorioAS:app", host="0.0.0.0", port=port)
+
+
 
 
 
