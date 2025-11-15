@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad Práctica: Analizando Apps</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: #2c3e50;
+            background-color: #f0f4f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .presentation-wrapper {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .slides-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .slide {
+            flex: 0 0 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+            padding: 4rem 8rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .slide-title {
+            font-size: 3.5em;
+            color: #004d40;
+            margin-bottom: 2rem;
+            border-bottom: 5px solid #4caf50;
+            padding-bottom: 0.5rem;
+        }
+        .slide-content {
+            font-size: 1.5em;
+            line-height: 1.8;
+            max-width: 1000px;
+        }
+        .slide-content h2 {
+            font-size: 2.2em;
+            color: #34495e;
+            margin-top: 0;
+            text-align: left;
+        }
+        .slide-content ul {
+            text-align: left;
+            margin: 2rem auto;
+            max-width: 800px;
+            padding-left: 0;
+            list-style-type: none;
+        }
+        .slide-content li {
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #3498db;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .slide-content li:before {
+            content: '✓';
+            position: absolute;
+            left: -18px;
+            color: #3498db;
+            font-weight: bold;
+            font-size: 1.5em;
+            line-height: 1;
+        }
+        .slide ol {
+            text-align: left;
+            margin: 2rem auto;
+            max-width: 800px;
+            padding-left: 0;
+            list-style-type: none;
+        }
+        .slide ol li {
+            margin-bottom: 1rem;
+            border-left: none;
+            padding-left: 0;
+            position: relative;
+        }
+        .slide ol li:before {
+            content: counter(item);
+            counter-increment: item;
+            position: absolute;
+            left: -20px;
+            font-weight: bold;
+            color: #00796b;
+            font-size: 1.2em;
+        }
+        body { counter-reset: item; }
+        
+        .nav-buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 2rem;
+            z-index: 100;
+        }
+        .nav-buttons button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            font-size: 2.5em;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+        .nav-buttons button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .analogy {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 8px;
+            font-style: italic;
+            text-align: left;
+        }
+        .analogy p {
+            margin: 0;
+        }
+        .progress-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #bbb;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+        .progress-dot.active {
+            background-color: #00796b;
+        }
+        .slide img {
+            max-width: 80%;
+            height: auto;
+            margin: 2rem 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 1.2em;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        .comparison-table th {
+            background-color: #006064;
+            color: white;
+        }
+        .comparison-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .positive { color: #4CAF50; font-weight: bold; }
+        .negative { color: #F44336; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="presentation-wrapper">
+    <div class="slides-container">
+        <!-- Slide 1: Título de la Actividad -->
+        <div class="slide">
+            <h1 class="slide-title">Actividad Práctica: Analizando la Arquitectura de una App 🕵️‍♂️</h1>
+            <div class="slide-content">
+                <p><strong>De la teoría a la práctica.</strong></p>
+                <p>En esta actividad, aplicaremos todo lo que hemos aprendido sobre arquitectura de software para analizar un sistema real y comprender sus decisiones de diseño.</p>
+                <br/>
+                <h3>Docente: Jorge García Cárdenas</h3>
+            </div>
+        </div>
+
+        <!-- Slide 2: Objetivo de la Actividad -->
+        <div class="slide">
+            <h2 class="slide-title">Objetivo</h2>
+            <div class="slide-content">
+                <p>El objetivo principal es que, en equipo, puedan:</p>
+                <ul>
+                    <li><strong>Identificar la posible arquitectura de un software conocido:</strong> Pensar en los componentes clave que hacen que la aplicación funcione.</li>
+                    <li><strong>Discutir y documentar sus componentes:</strong> Analizar los flujos de información y crear diagramas que representen su estructura.</li>
+                    <li><strong>Defender sus conclusiones:</strong> Justificar por qué creen que esa arquitectura es la adecuada, usando conceptos como escalabilidad y tolerancia a fallos.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: La Tarea: Pasos Iniciales -->
+        <div class="slide">
+            <h2 class="slide-title">La Tarea: Pasos Iniciales</h2>
+            <div class="slide-content">
+                <p><strong>1. Formación de Grupos:</strong> Se dividirán en "grupos de 4 o 5 personas".</p>
+                <p><strong>2. Elección de la App:</strong> El docente le asignará a cada grupo una de las siguientes aplicaciones populares para analizar:</p>
+                <ul>
+                    <li><strong>WhatsApp:</strong> Mensajería y llamadas instantáneas.</li>
+                    <li><strong>Spotify:</strong> Streaming de música.</li>
+                    <li><strong>Netflix:</strong> Streaming de video.</li>
+                    <li><strong>Uber / Didi:</strong> Servicios de transporte bajo demanda.</li>
+                    <li><strong>Rappi / DiDi Food:</strong> Entrega de comida y productos.</li>
+                    <li><strong>Airbnb:</strong> Alojamiento y experiencias.</li>
+                </ul>
+                <p><strong>3. Primer Análisis:</strong> Usen la app en sus teléfonos y exploren sus funcionalidades clave. ¿Qué sucede cuando envían un mensaje, ponen una canción o piden un taxi?</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Asignación de Grupos -->
+        <div class="slide">
+            <h2 class="slide-title">Asignación de Grupos y Apps</h2>
+            <div class="slide-content">
+                <p>Para la actividad, los 25 estudiantes se dividirán en los siguientes grupos, cada uno con una aplicación asignada:</p>
+                <ol>
+                    <li><strong>Grupo 1:</strong> WhatsApp (Estudiantes 1 a 5)</li>
+                    <li><strong>Grupo 2:</strong> Spotify (Estudiantes 6 a 10)</li>
+                    <li><strong>Grupo 3:</strong> Netflix (Estudiantes 11 a 15)</li>
+                    <li><strong>Grupo 4:</strong> Uber / Didi (Estudiantes 16 a 20)</li>
+                    <li><strong>Grupo 5:</strong> Rappi / DiDi Food (Estudiantes 21 a 25)</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Slide 5: Guía de Análisis Detallada -->
+        <div class="slide">
+            <h2 class="slide-title">Guía de Análisis Detallada</h2>
+            <div class="slide-content">
+                <p>Mientras exploran la app, pregunten y analicen:</p>
+                <ul>
+                    <li><strong>Actores (usuarios):</strong> ¿Quiénes interactúan con el sistema? (ej. usuario normal, creador de contenido, conductor, repartidor).</li>
+                    <li><strong>Funcionalidades:</strong> ¿Qué hace la app? (ej. subir videos, buscar canciones, hacer pagos).</li>
+                    <li><strong>Flujo de Información:</strong> ¿Cómo viajan los datos? (ej. del teléfono al servidor, del servidor a otros servicios, como un sistema de pagos o un GPS).</li>
+                    <li><strong>Requerimientos no funcionales:</strong> ¿Qué tan segura, rápida o tolerante a fallos necesita ser la app para tener éxito?</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 6: Diagramando la Arquitectura -->
+        <div class="slide">
+            <h2 class="slide-title">Diagramando la Arquitectura: Modelo C4</h2>
+            <div class="slide-content">
+                <p>Deberán crear diagramas del "Modelo C4" para su aplicación. Esto ayuda a estructurar su pensamiento y presentar sus ideas de forma clara.</p>
+                <ul>
+                    <li><strong>Nivel 1: Contexto:</strong> Muestren su app como una "caja negra" interactuando con usuarios y otros sistemas.</li>
+                    <li><strong>Nivel 2: Contenedores:</strong> ¿Cuáles son las "cajas" o "módulos" internos del sistema? (ej. app móvil, servidor backend, bases de datos, sistema de notificaciones).</li>
+                    <li><strong>Nivel 3: Componentes:</strong> Elijan un contenedor clave (ej. el backend) y muestren sus componentes principales (ej. módulos de autenticación, pagos, mensajería).</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 7: Ejemplo de Diagrama de Contexto (Nivel 1) -->
+        <div class="slide">
+            <h2 class="slide-title">Ejemplo: C4 Nivel 1 (Instagram)</h2>
+            <div class="slide-content">
+                <img src="https://placehold.co/1000x500/E57373/FFFFFF?text=Usuario+<>+Sistema+Instagram,+Servicio+de+Autenticacion+Externo" alt="Diagrama de contexto de Instagram en C4">
+                <p>En este nivel, vemos que el sistema de Instagram interactúa con sus "Usuarios" y con otros sistemas de autenticación social, como "Facebook".</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Ejemplo de Diagrama de Contenedores (Nivel 2) -->
+        <div class="slide">
+            <h2 class="slide-title">Ejemplo: C4 Nivel 2 (Instagram)</h2>
+            <div class="slide-content">
+                <img src="https://placehold.co/1000x500/4CAF50/FFFFFF?text=App+Movil+<>+Servidor+API+<>+Base+de+Datos,+CDN+de+Archivos" alt="Diagrama de contenedores de Instagram en C4">
+                <p>Aquí "entramos" a Instagram. Vemos los contenedores principales: la "App Móvil", el "Servidor API de Backend", una "Base de Datos" para los datos de los usuarios y un "CDN" (Red de Distribución de Contenido) para las fotos y videos.</p>
+            </div>
+        </div>
+
+        <!-- Slide 9: Ejemplo de Diagrama de Componentes (Nivel 3) -->
+        <div class="slide">
+            <h2 class="slide-title">Ejemplo: C4 Nivel 3 (Backend)</h2>
+            <div class="slide-content">
+                <img src="https://placehold.co/1000x500/3498DB/FFFFFF?text=Servicio+de+Usuario,+Servicio+de+Feed,+Servicio+de+Notificaciones,+Servicio+de+Media" alt="Diagrama de componentes del Backend de Instagram en C4">
+                <p>Seleccionamos el contenedor del "Backend" y vemos sus componentes: un "Servicio de Usuarios" (para perfiles y autenticación), un "Servicio de Feed" (para mostrar el contenido), un "Servicio de Notificaciones" y un "Servicio de Media" (para subir y procesar fotos y videos).</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Presentación de los Resultados -->
+        <div class="slide">
+            <h2 class="slide-title">Presentación de los Resultados</h2>
+            <div class="slide-content">
+                <p>Cada grupo presentará su análisis. El objetivo no es adivinar la arquitectura exacta, sino mostrar su "proceso de razonamiento".</p>
+                <ul>
+                    <li><strong>Diagramas:</strong> Muestren su modelo C4 de la app elegida.</li>
+                    <li><strong>Justificación:</strong> Expliquen por qué creen que la app usa una arquitectura monolítica, de microservicios o de capas. ¿Qué ventajas y desventajas tiene para su caso de uso?</li>
+                    <li><strong>Conclusiones:</strong> Discutan los desafíos de su propuesta y las soluciones que plantearían para el futuro.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 11: Estructura de la Presentación -->
+        <div class="slide">
+            <h2 class="slide-title">Estructura de la Presentación</h2>
+            <div class="slide-content">
+                <p>Sigan esta estructura para su presentación:</p>
+                <ul>
+                    <li><strong>Introducción:</strong> Nombre de la app y funcionalidades principales.</li>
+                    <li><strong>Análisis de Actores y Datos:</strong> Usuarios, sistemas y la información clave.</li>
+                    <li><strong>Diagramas C4:</strong> Nivel 1, 2 y 3.</li>
+                    <li><strong>Justificación de Arquitectura:</strong> ¿Por qué escogieron ese estilo? (ej. escalabilidad, velocidad de despliegue).</li>
+                    <li><strong>Preguntas y Reflexiones:</strong> ¿Qué desafíos encontraron? ¿Qué harían diferente?</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 12: Herramientas para Diagramar -->
+        <div class="slide">
+            <h2 class="slide-title">Herramientas Recomendadas ✍️</h2>
+            <div class="slide-content">
+                <p>Pueden usar cualquier herramienta de diagramación. Aquí hay algunas opciones gratuitas o fáciles de usar:</p>
+                <ul>
+                    <li><strong>Draw.io / diagrams.net:</strong> Herramienta en línea gratuita.</li>
+                    <li><strong>Excalidraw:</strong> Para diagramas de estilo "a mano alzada".</li>
+                    <li><strong>Google Slides / PowerPoint:</strong> Simples pero efectivas para los diagramas C4.</li>
+                    <li><strong>Whimsical:</strong> Para flujos de usuario y mapas mentales.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 13: ¡Manos a la Obra! -->
+        <div class="slide">
+            <h2 class="slide-title">¡Manos a la Obra! 🚀</h2>
+            <div class="slide-content">
+                <p>Esta es una excelente oportunidad para pensar como arquitectos de software.</p>
+                <p>No hay respuestas correctas o incorrectas, lo importante es la "justificación de sus decisiones y la claridad en la comunicación."</p>
+                <p>Si tienen inquietudes, no duden en preguntarme!</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <button onclick="prevSlide()">&#8249;</button>
+    <button onclick="nextSlide()">&#8250;</button>
+</div>
+
+<div class="progress-indicator"></div>
+
+<script>
+    const slidesContainer = document.querySelector('.slides-container');
+    const slides = document.querySelectorAll('.slide');
+    const progressIndicator = document.querySelector('.progress-indicator');
+    let currentSlide = 0;
+
+    slides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.classList.add('progress-dot');
+        dot.onclick = () => showSlide(index);
+        progressIndicator.appendChild(dot);
+    });
+
+    const dots = document.querySelectorAll('.progress-dot');
+
+    function updateProgress() {
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentSlide);
+        });
+    }
+
+    function showSlide(index) {
+        if (index >= slides.length) {
+            currentSlide = 0;
+        } else if (index < 0) {
+            currentSlide = slides.length - 1;
+        } else {
+            currentSlide = index;
+        }
+        slidesContainer.style.transform = `translateX(-${currentSlide * 100}vw)`;
+        updateProgress();
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        }
+    });
+
+    showSlide(0);
+</script>
+
+</body>
+</html>
