@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a la Arquitectura de Software</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: #2c3e50;
+            background-color: #f0f4f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .presentation-wrapper {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .slides-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .slide {
+            flex: 0 0 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+            padding: 4rem 8rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .slide-title {
+            font-size: 3.5em;
+            color: #004d40;
+            margin-bottom: 2rem;
+            border-bottom: 5px solid #4caf50;
+            padding-bottom: 0.5rem;
+        }
+        .slide-content {
+            font-size: 1.5em;
+            line-height: 1.8;
+            max-width: 1000px;
+        }
+        .slide-content h2 {
+            font-size: 2.2em;
+            color: #34495e;
+            margin-top: 0;
+            text-align: left;
+        }
+        .slide-content ul {
+            text-align: left;
+            margin: 2rem auto;
+            max-width: 800px;
+            padding-left: 0;
+            list-style-type: none;
+        }
+        .slide-content li {
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #3498db;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .slide-content li:before {
+            content: '✓';
+            position: absolute;
+            left: -18px;
+            color: #3498db;
+            font-weight: bold;
+            font-size: 1.5em;
+            line-height: 1;
+        }
+        .slide ol {
+            text-align: left;
+            margin: 2rem auto;
+            max-width: 800px;
+            padding-left: 0;
+            list-style-type: none;
+        }
+        .slide ol li {
+            margin-bottom: 1rem;
+            border-left: none;
+            padding-left: 0;
+            position: relative;
+        }
+        .slide ol li:before {
+            content: counter(item);
+            counter-increment: item;
+            position: absolute;
+            left: -20px;
+            font-weight: bold;
+            color: #00796b;
+            font-size: 1.2em;
+        }
+        .slide ol .icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+            color: #00897b;
+        }
+        body { counter-reset: item; }
+        
+        .nav-buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 2rem;
+            z-index: 100;
+        }
+        .nav-buttons button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            font-size: 2.5em;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+        .nav-buttons button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .analogy {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-radius: 8px;
+            font-style: italic;
+            text-align: left;
+        }
+        .analogy p {
+            margin: 0;
+        }
+        .progress-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #bbb;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+        .progress-dot.active {
+            background-color: #00796b;
+        }
+        .slide img {
+            max-width: 80%;
+            height: auto;
+            margin: 2rem 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-size: 1.2em;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        .comparison-table th {
+            background-color: #006064;
+            color: white;
+        }
+        .comparison-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .positive { color: #4CAF50; font-weight: bold; }
+        .negative { color: #F44336; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="presentation-wrapper">
+    <div class="slides-container">
+        <div class="slide">
+            <h1 class="slide-title">Introducción a la Arquitectura de Software 🎓</h1>
+            <div class="slide-content">
+                <p><strong>El esqueleto de nuestros sistemas.</strong></p>
+                <p>Un viaje para entender las decisiones que construyen proyectos robustos y escalables.</p>
+                <br/>
+                <h3>Docente: Jorge García Cárdenas</h3>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">¿Qué es la Arquitectura de Software?</h2>
+            <div class="slide-content">
+                <p>Es el conjunto de <strong class="subt">'decisiones estratégicas'</strong> de alto nivel que estructuran un sistema de software.</p>
+                <p>Va mucho más allá del código. Define cómo se interconectan los componentes, cómo se manejan los datos y cómo el sistema se comporta bajo presión.</p>
+                <div class="analogy">
+                    <p><strong>Analogía del Edificio:</strong> El arquitecto de un edificio no pone ladrillos, diseña los planos. Decide dónde va la cimentación, la estructura, las tuberías y la electricidad. El arquitecto de software hace lo mismo: define los cimientos del sistema.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">El Rol del Arquitecto 🏛️</h2>
+            <div class="slide-content">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWVfiKT7nTGzJwxMozSor2QSz3Es5tbqNJYLXNESw7TOHV4VuN13JJHNnMgqUbx8dER-O1If6FU9NLVSQhpZkHmgKEZ6W9yBWu-J_JwjDJgakiKpf1yLmXaXfHBe0hjot2Io2E0idOOD8u/s1600/SoftwareArchitect.png" alt="AS">
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2 class="slide-title">El Rol del Arquitecto 🏛️</h2>
+            <div class="slide-content">
+                <p>El arquitecto de software es un rol <strong class="subt">'multifacético'</strong> que va mucho más allá de las decisiones técnicas.</p>
+                <p>El arquitecto de software es el <strong class="subt">'tomador de decisiones'</strong> clave.</p>
+                <ul>
+                    <li>Se enfoca en problemas a <strong class="subt">'gran escala'</strong>: ¿Cómo manejaremos millones de usuarios? ¿Qué hacemos si un servidor falla?</li>
+                    <li>Evalúa <strong class="subt">'opciones y tecnologías'</strong> (ej. ¿Python o Java? ¿SQL o NoSQL?).</li>
+                    <li>Se anticipa a los <strong class="subt">'desafíos futuros'</strong> del sistema.</li>
+                    <li><strong class="subt">'Líder Técnico:'</strong> Guía al equipo en las mejores prácticas de código y diseño.</li>
+                    <li><strong class="subt">'Estratega del Negocio:'</strong> Traduce los objetivos del negocio a soluciones técnicas.</li>
+                    <li><strong class="subt">'Mentor:'</strong> Ayuda a los desarrolladores a crecer en sus habilidades.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">El Rol del Arquitecto (Continuación)</h2>
+            <div class="slide-content">
+                <p>Sus responsabilidades incluyen:</p>
+                <ul>
+                    <li><strong class="subt">'Diseño de la Arquitectura:'</strong> Proponer la estructura general del sistema.</li>
+                    <li><strong class="subt">'Gestión de "Trade-offs":'</strong> Balancear los pros y contras de cada decisión.</li>
+                    <li><strong class="subt">'Comunicación:'</strong> Documentar y comunicar la arquitectura a todas las partes interesadas.</li>
+                    <li><strong class="subt">'Evolución Continua:'</strong> Asegurar que la arquitectura se adapte a nuevos desafíos.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2 class="slide-title">Arquitectura vs. Diseño 📐</h2>
+            <div class="slide-content">
+                <p>Una analogía para diferenciar ambos:</p>
+                <ul>
+                    <li><strong class="subt">'Arquitectura:'</strong> Es el "mapa de un país". Te muestra las ciudades principales, ríos y carreteras importantes. Es una visión de alto nivel.</li>
+                    <li><strong class="subt">'Diseño de Software:'</strong> Es el "plano de un edificio en una de esas ciudades". Detalla la estructura de cada habitación, dónde va cada muro, etc. Es una visión de bajo nivel.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2 class="slide-title">Arquitectura vs. Diseño 📐</h2>
+            <div class="slide-content">
+                <ul>
+                    <li><strong class="subt">'Arquitectura:'</strong> Se enfoca en el "qué". Son las decisiones de alto nivel, los cimientos. (Ej: "¿Construimos con microservicios o un monolito?"). Son difíciles de cambiar.</li>
+                    <li><strong class="subt">'Diseño de Software:'</strong> Se enfoca en el "cómo". Son las decisiones de bajo nivel. (Ej: "¿Qué patrón de diseño usaremos para este módulo?"). Son más flexibles y se adaptan a la arquitectura.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Arquitectura vs. Diseño: Diferencias</h2>
+            <div class="slide-content">
+                <table class="comparison-table">
+                    <thead>
+                        <tr><th>Aspecto</th><th>Arquitectura</th><th>Diseño de Software</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong class="subt">'Enfoque'</strong></td><td>Estructura general, componentes, relaciones</td><td>Patrones de diseño, clases, funciones</td></tr>
+                        <tr><td><strong class="subt">'Nivel'</strong></td><td>Alto nivel (macro)</td><td>Bajo nivel (micro)</td></tr>
+                        <tr><td><strong class="subt">'Alcance'</strong></td><td>Todo el sistema</td><td>Un módulo o componente</td></tr>
+                        <tr><td><strong class="subt">'Cambio'</strong></td><td>Difícil y costoso de cambiar</td><td>Más fácil de cambiar</td></tr>
+                        <tr><td><strong class="subt">'Pregunta'</strong></td><td>¿QUÉ partes tiene el sistema?</td><td>¿CÓMO se construye cada parte?</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Principios Clave de la Arquitectura</h2>
+            <div class="slide-content">
+                <ul>
+                    <li><strong class="subt">'Cohesión:'</strong> Qué tan relacionadas están las responsabilidades de un componente.
+                        <p><strong>Ideal:</strong> <span class="positive">Alta Cohesión</span>. Un módulo hace una sola cosa bien. <br><strong>Ejemplo:</strong> Un módulo de "usuarios" que solo maneja el registro y la autenticación.</p></li>
+                    <li><strong class="subt">'Acoplamiento:'</strong> El grado de dependencia entre los módulos.
+                        <p><strong>Ideal:</strong> <span class="positive">Bajo Acoplamiento</span>. Los módulos son independientes. <br><strong>Ejemplo:</strong> Un módulo de "pagos" que no necesita saber cómo funciona el módulo de "envíos".</p></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Principios Clave (Continuación)</h2>
+            <div class="slide-content">
+                <ul>
+                    <li><strong class="subt">'Escalabilidad:'</strong> Capacidad del sistema para manejar una carga creciente.
+                        <p><strong>Ideal:</strong> <span class="positive">Horizontal</span>. Añadir más servidores es más fácil que mejorar uno solo. <br><strong>Ejemplo:</strong> Facebook escala horizontalmente para manejar millones de usuarios.</p></li>
+                    <li><strong class="subt">'Tolerancia a Fallos:'</strong> Habilidad del sistema para seguir funcionando si una parte falla.
+                        <p><strong>Ideal:</strong> <span class="positive">Alta Tolerancia</span>. <br><strong>Ejemplo:</strong> Un servicio de notificaciones que falla, pero no impide que los usuarios hagan un pago.</p></li>
+                    <li><strong class="subt">'Compromisos (Trade-offs):'</strong> No existe una solución perfecta. Cada decisión tiene pros y contras.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Estilos de Arquitectura: Tipos Comunes</h2>
+            <div class="slide-content">
+                <p>Un estilo de arquitectura es una solución de alto nivel a un problema recurrente.</p>
+                <ul>
+                    <li><strong class="subt">'Monolito:'</strong> Toda la aplicación en una sola unidad.</li>
+                    <li><strong class="subt">'Microservicios:'</strong> La aplicación se divide en servicios pequeños e independientes.</li>
+                    <li><strong class="subt">'Arquitectura de Capas:'</strong> Separa la aplicación en capas (Presentación, Lógica, Datos).</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Ejemplo: Monolito</h2>
+            <div class="slide-content">
+                <p>Toda la lógica (frontend, backend, lógica de negocio) se ejecuta en un único proceso.</p>
+                <p>Ejemplo: Una aplicación de e-commerce simple. Todo el código (productos, usuarios, pagos) se ejecuta en un único proceso.</p>
+                <img src="https://unahuellaenti.com/wp-content/uploads/2024/08/k8s-01-1448x2048.jpg" width="20%" alt="Diagrama de una arquitectura monolítica">
+                <p><strong>Ventajas:</strong> Más fácil de desarrollar, probar y desplegar al principio. <span class="positive">✔️</span><br><strong>Desventajas:</strong> Difícil de escalar y mantener a medida que crece. <span class="negative">❌</span></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Ejemplo: Microservicios</h2>
+            <div class="slide-content">
+                <p>Funcionalidades divididas en servicios autónomos que se comunican a través de APIs.</p>
+                <p>Ejemplo: La misma aplicación de e-commerce, pero dividida en servicios autónomos que se comunican a través de APIs.</p>
+                <img src="https://www.mytaskpanel.com/wp-content/uploads/2021/06/consulting-blog-31a.webp" width="40%" alt="Diagrama de una arquitectura de microservicios">
+                <p><strong>Ventajas:</strong> Escalabilidad independiente, tolerancia a fallos. <span class="positive">✔️</span><br><strong>Desventajas:</strong> Alta complejidad, mayor costo operativo. <span class="negative">❌</span></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Ejemplo: Arquitectura de Capas</h2>
+            <div class="slide-content">
+                <p>La arquitectura más común. Separa la aplicación en capas lógicas: Interfaz de Usuario, Lógica de Negocio y Datos.</p>
+                <img src="https://blog.walthercuro.com/wp-content/uploads/2024/11/image-1.png" width="50%" alt="Diagrama de una arquitectura de capas">
+                <p><strong>Ventajas:</strong> Cada capa se puede desarrollar y probar de forma independiente, lo que mejora la organización del código. <span class="positive">✔️</span></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Monolito vs. Microservicios</h2>
+            <div class="slide-content">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>Monolito</th>
+                            <th>Microservicios</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Complejidad</td><td><span class="positive">Baja</span></td><td><span class="negative">Alta</span></td></tr>
+                        <tr><td>Escalabilidad</td><td><span class="negative">Difícil</span></td><td><span class="positive">Flexible</span></td></tr>
+                        <tr><td>Tolerancia a Fallos</td><td><span class="negative">Baja</span></td><td><span class="positive">Alta</span></td></tr>
+                        <tr><td>Mantenimiento</td><td><span class="negative">Complejo con el tiempo</span></td><td><span class="positive">Fácil por servicio</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2 class="slide-title">Documentación: El Modelo C4</h2>
+            <div class="slide-content">
+                <p>El <strong class="subt"><a href="https://c4model.com/" target="_blank">'Modelo C4'</a></strong> es un estándar para visualizar la arquitectura de software. Fue creado por Simon Brown para ayudar a los equipos a comunicar la arquitectura de manera clara y consistente.</p>
+                <p>Es una "vista" de la arquitectura en <strong>cuatro niveles</strong> de zoom, de lo más abstracto a lo más detallado.</p>
+                <img src="https://c4model.com/images/c4-overview.png" alt="Modelo C4">
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2 class="slide-title">Alternativas al Modelo C4</h2>
+            <div class="slide-content">
+                <p>Aunque el modelo C4 es popular, existen otros enfoques:</p>
+                <ul>
+                    <li><strong class="subt">'<a href="https://es.wikipedia.org/wiki/Lenguaje_unificado_de_modelado">UML</a> (Unified Modeling Language):'</strong> Un estándar más formal y detallado, a veces considerado demasiado complejo para el día a día.</li>
+                    <li><strong class="subt">'Diagramas de Arquitectura de <a href="https://aws.amazon.com/es/what-is/architecture-diagramming/">AWS</a>/Azure/GCP:'</strong> Diagramas centrados en los servicios específicos de cada proveedor de nube.</li>
+                    <li><strong class="subt">'<a href="https://medium.com/@juansalinas-xyz/registro-de-decisiones-arquitect%C3%B3nicas-adrs-8a399ee618c7">ADRs</a> (Architecture Decision Records):'</strong> Documentos de texto que explican las decisiones arquitectónicas importantes y por qué se tomaron.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">¿Por qué usar el Modelo C4?</h2>
+            <div class="slide-content">
+                <ul>
+                    <li><strong class="subt">'Claridad y Consistencia:'</strong> Proporciona un lenguaje común para todos los miembros del equipo.</li>
+                    <li><strong class="subt">'Múltiples Audiencias:'</strong> Cada nivel es útil para una audiencia diferente (técnicos, gerentes, clientes).</li>
+                    <li><strong class="subt">'Ayuda a los Nuevos:'</strong> Facilita la incorporación de nuevos desarrolladores al equipo.</li>
+                    <li><strong class="subt">'Independiente de Herramientas:'</strong> Se puede dibujar en un pizarrón o con software profesional.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">C4 Nivel 1: Contexto 🌍</h2>
+            <div class="slide-content">
+                <p>La vista más simple. Muestra el sistema en el centro, rodeado de sus usuarios y sistemas externos. Responde a: <strong class="subt">'¿Cómo encaja el sistema en el universo?'</strong></p>
+                <img src="https://static.structurizr.com/workspace/76748/diagrams/SystemContext.png" width="50%" alt="Diagrama de contexto del modelo C4, mostrando el sistema central y sus interacciones con personas y sistemas externos">
+                <img src="https://static.structurizr.com/workspace/76748/diagrams/SystemContext-key.png" width="50%" alt="Diagrama de contexto del modelo C4, key">
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">C4 Nivel 2: Contenedores 📦</h2>
+            <div class="slide-content">
+                <p>Un "zoom" al sistema. Muestra las aplicaciones, bases de datos, y microservicios, y cómo se comunican. Responde a: <strong class="subt">'¿Cómo se divide el sistema internamente?'</strong></p>
+                <img src="https://static.structurizr.com/workspace/76748/diagrams/Containers.png" width="50%" alt="Diagrama de contenedores del modelo C4, mostrando los componentes internos del sistema">
+                <img src="https://static.structurizr.com/workspace/76748/diagrams/Containers-key.png" width="50%" alt="Diagrama de contenedores del modelo C4, key">
+                
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">C4 Nivel 3: Componentes 🧩</h2>
+            <div class="slide-content">
+                <p>Un "zoom" a un contenedor. Muestra los módulos, servicios y componentes internos. Responde a: <strong class="subt">'¿Qué hay dentro de un contenedor?'</strong></p>
+                <img src="https://static.structurizr.com/workspace/76748/diagrams/Components.png" width="50%" alt="Diagrama de componentes del modelo C4, mostrando la estructura interna de un contenedor">
+                <img src="https://static.structurizr.com/workspace/76748/diagrams/Components-key.png" width="50%" alt="Diagrama de componentes del modelo C4, key">
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">C4 Nivel 4: Código 💻</h2>
+            <div class="slide-content">
+                <p>La vista más detallada, a nivel de clases e interfaces. Responde a: <strong class="subt">'¿Cómo se implementa un componente?'</strong> Este nivel a menudo se genera automáticamente a partir del código.</p>
+                <img src="https://static.structurizr.com/workspace/36141/diagrams/MainframeBankingSystemFacade.png" alt="Diagrama de código del modelo C4, mostrando las clases y sus relaciones">
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Caso de Estudio: Citas Médicas 🗓️</h2>
+            <div class="slide-content">
+                <p>Vamos a diseñar la arquitectura de un software para agendar citas médicas. Estos son los <strong class="subt">'requerimientos principales'</strong>:</p>
+                <ul>
+                    <li>Los usuarios pueden registrarse, iniciar sesión y agendar citas con doctores.</li>
+                    <li>Los doctores pueden gestionar sus horarios y ver sus citas.</li>
+                    <li>Los pacientes reciben notificaciones por correo electrónico y SMS.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <h2 class="slide-title">Requerimientos no funcionales</h2>
+            <div class="slide-content">
+                <p>Estos requisitos son igual de importantes y determinan la arquitectura:</p>
+                <ul>
+                    <li><strong class="subt">'Escalabilidad:'</strong> Se espera un crecimiento de hasta 1 millón de usuarios en 2 años.</li>
+                    <li><strong class="subt">'Disponibilidad:'</strong> Debe estar disponible 24/7.</li>
+                    <li><strong class="subt">'Seguridad:'</strong> La información del paciente debe ser segura (cumplir con normativas).</li>
+                    <li><strong class="subt">'Rendimiento:'</strong> El agendamiento de citas debe ser rápido y accesible desde web y móvil.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Propuesta 1: Arquitectura Monolítica</h2>
+            <div class="slide-content">
+                <p>Todas las funcionalidades (usuarios, doctores, citas, notificaciones) en una sola aplicación. Es la opción más rápida para empezar.</p>
+                <img src="https://wac-cdn.atlassian.com/dam/jcr:95b9a276-c524-42b1-8d06-ded56d589858/Monolithic%20architecture@2x.png" width="30%" alt="Propuesta monolítica para la aplicación de citas">
+                <p><strong>Ventaja:</strong> Fácil de construir y desplegar al principio. Ideal para una startup con pocos recursos. <span class="positive">👍</span><br><strong>Desventaja:</strong> Escalar un solo módulo (ej. las citas) significa escalar toda la aplicación. <span class="negative">👎</span></p>
+                <p><strong>¿Qué riesgos tiene?</strong> El rápido crecimiento podría sobrecargar el sistema y dificultar el mantenimiento. <span class="negative">👎</span></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Propuesta 2: Arquitectura de Microservicios</h2>
+            <div class="slide-content">
+                <p>Separamos las funcionalidades en servicios independientes: Servicio de Usuarios, Servicio de Citas, Servicio de Notificaciones, etc.</p>
+                <img src="https://wac-cdn.atlassian.com/dam/jcr:5308ccab-dc94-46f5-978c-8a77b8d5be57/Microservice%20architecture@2x.png" width="50%" alt="Propuesta de microservicios para la aplicación de citas">
+                <p><strong>Ventaja:</strong> Alta escalabilidad y resiliencia. Un fallo en notificaciones no tumba las citas. <span class="positive">👍</span><br><strong>Desventaja:</strong> Mayor complejidad inicial, más trabajo de infraestructura y operación. <span class="negative">👎</span></p>
+                <p><strong>¿Por qué podría funcionar?</strong> Alta escalabilidad, si las citas crecen, solo escalamos ese servicio. <span class="positive">👍</span></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Propuesta 3: Arquitectura de Capas</h2>
+            <div class="slide-content">
+                <p>Organizaremos la aplicación en capas: Presentación (UI), Lógica de Negocio y Persistencia de Datos. </p>
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEinAJuNYU-3QtoPuQTXwQFJpQfg13rr22OITPu54r10r8_yXeQ68dO-cV7uuq74qtTu5cFFvWjHch0VW6gdOo57C777oJ0YV8Tsy_04l0b_94DBZ87aRlremj-EjWemg8HIndwectaPhOm9/s400/arquitectura_n_capas.png" width="40%" alt="Propuesta de arquitectura de capas para la aplicación de citas">
+                <p><strong>Ventaja:</strong> Código más limpio y organizado, lo que facilita el mantenimiento. <span class="positive">👍</span><br><strong>Desventaja:</strong> Puede convertirse en un monolito si no se gestionan bien las dependencias entre capas. <span class="negative">👎</span></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Discusión de las Propuestas</h2>
+            <div class="slide-content">
+                <ul>
+                    <li>El <strong class="subt">'Monolito'</strong> es ideal para el inicio, pero podría limitar el crecimiento.</li>
+                    <li>La <strong class="subt">'Arquitectura de Capas'</strong> es una opción sólida, balanceada, fácil de entender y de mantener.</li>
+                    <li>Los <strong class="subt">'Microservicios'</strong> son la mejor opción para la escalabilidad a largo plazo, pero con un costo de complejidad inicial y operativa.</li>
+                </ul>
+                <p>La decisión final depende de los objetivos de la empresa: <strong class="subt">'velocidad de lanzamiento vs. escalabilidad futura'</strong>.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Para Reflexionar y Debatir 🤔</h2>
+            <div class="slide-content">
+                <ul>
+                    <li>¿Qué tipo de arquitectura usarían para una aplicación de una sola página, como un dashboard administrativo?</li>
+                    <li>Si tuvieran que diseñar una app para el pronóstico del tiempo, ¿qué tipo de arquitectura elegirían y por qué?</li>
+                    <li>¿Qué tan importante es la documentación para un proyecto de software a largo plazo?</li>
+                    <li>¿Qué métricas usarían para decidir si su sistema necesita ser más tolerante a fallos o más escalable?</li>
+                    <li>¿Cómo impacta la elección de una base de datos (SQL vs. NoSQL) en la arquitectura del sistema?</li>
+                    <li>¿En qué casos sería una mala idea usar microservicios?</li>
+                    <li>¿Cómo creen que la seguridad se ve afectada en una arquitectura de microservicios?</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2 class="slide-title">Resumen y Cierre</h2>
+            <div class="slide-content">
+                <p>La arquitectura es el arte de tomar decisiones estratégicas para construir sistemas sólidos.</p>
+                <p>No se trata de la tecnología más nueva, sino de la <strong class="subt">'solución más adecuada'</strong> para los problemas del negocio.</p>
+                <h3>¡Gracias!</h3>
+                <p>Ahora, vamos a la práctica!</p>
+                <br/>
+                <h3>Docente: Jorge García Cárdenas</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <button onclick="prevSlide()">&#8249;</button>
+    <button onclick="nextSlide()">&#8250;</button>
+</div>
+
+<div class="progress-indicator"></div>
+
+<script>
+    const slidesContainer = document.querySelector('.slides-container');
+    const slides = document.querySelectorAll('.slide');
+    const progressIndicator = document.querySelector('.progress-indicator');
+    let currentSlide = 0;
+
+    slides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.classList.add('progress-dot');
+        dot.onclick = () => showSlide(index);
+        progressIndicator.appendChild(dot);
+    });
+
+    const dots = document.querySelectorAll('.progress-dot');
+
+    function updateProgress() {
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentSlide);
+        });
+    }
+
+    function showSlide(index) {
+        if (index >= slides.length) {
+            currentSlide = 0;
+        } else if (index < 0) {
+            currentSlide = slides.length - 1;
+        } else {
+            currentSlide = index;
+        }
+        slidesContainer.style.transform = `translateX(-${currentSlide * 100}vw)`;
+        updateProgress();
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        }
+    });
+
+    showSlide(0);
+</script>
+
+</body>
+</html>
